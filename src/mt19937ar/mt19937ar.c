@@ -1,12 +1,14 @@
-/*
+/* 
    A C-program for MT19937, with initialization improved 2002/1/26.
    Coded by Takuji Nishimura and Makoto Matsumoto.
 
-   Before using, initialize the state by using init_genrand(seed)
+   Before using, initialize the state by using init_genrand(seed)  
    or init_by_array(init_key, key_length).
 
    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
-   All rights reserved.
+   All rights reserved.                          
+   Copyright (C) 2005, Mutsuo Saito,
+   All rights reserved.                          
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions
@@ -19,8 +21,8 @@
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
 
-     3. The names of its contributors may not be used to endorse or promote
-        products derived from this software without specific prior written
+     3. The names of its contributors may not be used to endorse or promote 
+        products derived from this software without specific prior written 
         permission.
 
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -42,8 +44,9 @@
 */
 
 #include <stdio.h>
+#include "mt19937ar.h"
 
-/* Period parameters */
+/* Period parameters */  
 #define N 624
 #define M 397
 #define MATRIX_A 0x9908b0dfUL   /* constant vector a */
@@ -58,8 +61,8 @@ void init_genrand(unsigned long s)
 {
     mt[0]= s & 0xffffffffUL;
     for (mti=1; mti<N; mti++) {
-        mt[mti] =
-                (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
+        mt[mti] = 
+	    (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti); 
         /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
         /* In the previous versions, MSBs of the seed affect   */
         /* only MSBs of the array mt[].                        */
@@ -73,7 +76,7 @@ void init_genrand(unsigned long s)
 /* init_key is the array for initializing keys */
 /* key_length is its length */
 /* slight change for C++, 2004/2/26 */
-void init_by_array(const unsigned long init_key[], int key_length)
+void init_by_array(unsigned long init_key[], int key_length)
 {
     int i, j, k;
     init_genrand(19650218UL);
@@ -81,7 +84,7 @@ void init_by_array(const unsigned long init_key[], int key_length)
     k = (N>key_length ? N : key_length);
     for (; k; k--) {
         mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))
-                + init_key[j] + j; /* non linear */
+          + init_key[j] + j; /* non linear */
         mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
         i++; j++;
         if (i>=N) { mt[0] = mt[N-1]; i=1; }
@@ -89,13 +92,13 @@ void init_by_array(const unsigned long init_key[], int key_length)
     }
     for (k=N-1; k; k--) {
         mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))
-                - i; /* non linear */
+          - i; /* non linear */
         mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
         i++;
         if (i>=N) { mt[0] = mt[N-1]; i=1; }
     }
 
-    mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
+    mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */ 
 }
 
 /* generates a random number on [0,0xffffffff]-interval */
@@ -124,7 +127,7 @@ unsigned long genrand_int32(void)
 
         mti = 0;
     }
-
+  
     y = mt[mti++];
 
     /* Tempering */
@@ -145,28 +148,28 @@ long genrand_int31(void)
 /* generates a random number on [0,1]-real-interval */
 double genrand_real1(void)
 {
-    return genrand_int32()*(1.0/4294967295.0);
-    /* divided by 2^32-1 */
+    return genrand_int32()*(1.0/4294967295.0); 
+    /* divided by 2^32-1 */ 
 }
 
 /* generates a random number on [0,1)-real-interval */
 double genrand_real2(void)
 {
-    return genrand_int32()*(1.0/4294967296.0);
+    return genrand_int32()*(1.0/4294967296.0); 
     /* divided by 2^32 */
 }
 
 /* generates a random number on (0,1)-real-interval */
 double genrand_real3(void)
 {
-    return (((double)genrand_int32()) + 0.5)*(1.0/4294967296.0);
+    return (((double)genrand_int32()) + 0.5)*(1.0/4294967296.0); 
     /* divided by 2^32 */
 }
 
 /* generates a random number on [0,1) with 53-bit resolution*/
-double genrand_res53(void)
-{
-    unsigned long a=genrand_int32()>>5, b=genrand_int32()>>6;
-    return(a*67108864.0+b)*(1.0/9007199254740992.0);
-}
+double genrand_res53(void) 
+{ 
+    unsigned long a=genrand_int32()>>5, b=genrand_int32()>>6; 
+    return(a*67108864.0+b)*(1.0/9007199254740992.0); 
+} 
 /* These real versions are due to Isaku Wada, 2002/01/09 added */
